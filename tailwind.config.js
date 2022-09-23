@@ -6,6 +6,12 @@ module.exports = {
       colors: {
         bggame: "#6D6552",
       },
+      width: {
+        48: "48rem",
+      },
+      height: {
+        48: "48rem",
+      },
     },
   },
   plugins: [],
