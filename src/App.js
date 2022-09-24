@@ -3,7 +3,7 @@ import Nav from "./components/navigation/Nav.jsx";
 
 export default function App() {
   return (
-    <div className="h-screen bg-bggame">
+    <div className="flex h-screen bg-bggame">
       <Nav />
       <Home />
     </div>

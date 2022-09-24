@@ -1,4 +1,4 @@
-import React from "react";
+import Tile from "./Tile";
 
 export default function Chesstable() {
   // Declaration of variables used in this Chesstable function
@@ -8,14 +8,10 @@ export default function Chesstable() {
 
   // This function returns a style to add to intercalated boxes in the chess table
   function intercalateColorsOfTable(i, j) {
-    let style = "bg-stone-900 text-white";
+    let blackBoxStyle = "bg-blackbox text-white";
 
-    if (i % 2 === 0) {
-      if (j % 2 === 0) {
-        return style;
-      }
-    } else if (j % 2 !== 0) {
-      return style;
+    if ((i + j) % 2 === 0) {
+      return blackBoxStyle;
     }
   }
 
@@ -31,6 +27,7 @@ export default function Chesstable() {
         >
           {horizontalPosition[i]}
           {verticalPosition[j]}
+          <Tile />
         </div>
       );
     }
@@ -38,8 +35,10 @@ export default function Chesstable() {
 
   return (
     <div className="grid place-content-center">
-      <div className="grid grid-cols-8 h-48 w-48 border-2 border-black">
-        {table}
+      <div className="flex p-16 bg-whitebox">
+        <div className="grid grid-cols-8 outline outline-4 outline-blackbox h-48 w-48">
+          {table}
+        </div>
       </div>
     </div>
   );

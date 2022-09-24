@@ -4,7 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bggame: "#6D6552",
+        bggame: "#231705",
+        blackbox: "#231705",
+        whitebox: "#A0814D",
       },
       width: {
         48: "48rem",
