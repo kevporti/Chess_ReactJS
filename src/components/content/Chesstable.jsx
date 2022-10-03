@@ -6,6 +6,7 @@ export default function Chesstable() {
   let verticalPosition = ["1", "2", "3", "4", "5", "6", "7", "8"];
   let table = [];
   let pieces = [];
+  let activePiece = null;
 
   class Piece {
     constructor(image, tablePosition, x, y) {
@@ -27,6 +28,37 @@ export default function Chesstable() {
       return "queen";
     } else if (x === 4) {
       return "king";
+    }
+  }
+
+  function grabPiece(e) {
+    const piece = e.target;
+    if (piece.classList.contains("piece")) {
+      const x = e.clientX - 50;
+      const y = e.clientY - 50;
+
+      piece.style.position = `absolute`;
+      piece.style.top = `${y}px`;
+      piece.style.left = `${x}px`;
+
+      activePiece = piece;
+    }
+  }
+
+  function movePiece(e) {
+    if (activePiece) {
+      const x = e.clientX - 50;
+      const y = e.clientY - 50;
+
+      activePiece.style.position = `absolute`;
+      activePiece.style.top = `${y}px`;
+      activePiece.style.left = `${x}px`;
+    }
+  }
+
+  function dropPiece(e) {
+    if (activePiece) {
+      activePiece = null;
     }
   }
 
@@ -76,12 +108,12 @@ export default function Chesstable() {
       pieces.forEach((piece) => {
         if (piece.x === i && piece.y === j) {
           image = piece.image;
-          position = piece.tablePosition;
         }
       });
 
       table.push(
         <div
+          key={`${position}`}
           className={`flex justify-center items-center h-24 w-24 ${intercalateColorsOfTable(
             i,
             j
@@ -96,7 +128,12 @@ export default function Chesstable() {
   return (
     <div className="grid place-content-center">
       <div className="flex p-16 bg-whitebox">
-        <div className="grid grid-cols-8 outline outline-4 outline-blackbox h-48 w-48">
+        <div
+          onMouseMove={(e) => movePiece(e)}
+          onMouseDown={(e) => grabPiece(e)}
+          onMouseUp={(e) => dropPiece(e)}
+          className="grid grid-cols-8 outline outline-4 outline-blackbox h-48 w-48"
+        >
           {table}
         </div>
       </div>
