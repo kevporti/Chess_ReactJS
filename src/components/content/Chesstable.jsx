@@ -1,4 +1,5 @@
 import Tile from "./Tile";
+import { useRef } from "react";
 
 export default function Chesstable() {
   // Declaration of variables used in this Chesstable function
@@ -7,6 +8,7 @@ export default function Chesstable() {
   let table = [];
   let pieces = [];
   let activePiece = null;
+  const chessTableRef = useRef(null);
 
   class Piece {
     constructor(image, tablePosition, x, y) {
@@ -17,6 +19,7 @@ export default function Chesstable() {
     }
   }
 
+  // Setting start position of the pieces in the chess table
   function startPositionOfPieces(x) {
     if (x === 0 || x === 7) {
       return "rook";
@@ -31,6 +34,7 @@ export default function Chesstable() {
     }
   }
 
+  // Setting an active piece if the player selected one to move and setting the coordinates using mouse cooords
   function grabPiece(e) {
     const piece = e.target;
     if (piece.classList.contains("piece")) {
@@ -46,13 +50,22 @@ export default function Chesstable() {
   }
 
   function movePiece(e) {
-    if (activePiece) {
+    const chessTable = chessTableRef.current;
+    if (activePiece && chessTable) {
+      // Variables to know the min/max of the chessTable positions
+      const minX = chessTable.offsetLeft - 25;
+      const minY = chessTable.offsetTop - 25;
+      const maxX = chessTable.offsetLeft + chessTable.clientWidth - 55;
+      const maxY = chessTable.offsetTop + chessTable.clientHeight - 55;
       const x = e.clientX - 50;
       const y = e.clientY - 50;
 
+      // Styling to not let the pieces go beyond the boundaries of the chessTable
       activePiece.style.position = `absolute`;
-      activePiece.style.top = `${y}px`;
-      activePiece.style.left = `${x}px`;
+      activePiece.style.left =
+        x < minX ? `${minX}px` : x > maxX ? `${maxX}px` : `${x}px`;
+      activePiece.style.top =
+        y < minY ? `${minY}px` : y > maxY ? `${maxY}px` : `${y}px`;
     }
   }
 
@@ -78,7 +91,7 @@ export default function Chesstable() {
           yPositionDifferentPieces
         )
       );
-      // Addming pawn pieces
+      // Adding pawn pieces
       pieces.push(
         new Piece(
           `assets/images/pawn_${colorOfPiece}.png`,
@@ -132,6 +145,7 @@ export default function Chesstable() {
           onMouseMove={(e) => movePiece(e)}
           onMouseDown={(e) => grabPiece(e)}
           onMouseUp={(e) => dropPiece(e)}
+          ref={chessTableRef}
           className="grid grid-cols-8 outline outline-4 outline-blackbox h-48 w-48"
         >
           {table}
