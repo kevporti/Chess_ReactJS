@@ -38,8 +38,8 @@ export default function Chesstable() {
   function grabPiece(e) {
     const piece = e.target;
     if (piece.classList.contains("piece")) {
-      const x = e.clientX - 50;
-      const y = e.clientY - 50;
+      const x = e.clientX - 25;
+      const y = e.clientY - 25;
 
       piece.style.position = `absolute`;
       piece.style.top = `${y}px`;
@@ -55,8 +55,8 @@ export default function Chesstable() {
       // Variables to know the min/max of the chessTable positions
       const minX = chessTable.offsetLeft - 25;
       const minY = chessTable.offsetTop - 25;
-      const maxX = chessTable.offsetLeft + chessTable.clientWidth - 55;
-      const maxY = chessTable.offsetTop + chessTable.clientHeight - 55;
+      const maxX = chessTable.offsetLeft + chessTable.clientWidth - 75;
+      const maxY = chessTable.offsetTop + chessTable.clientHeight - 75;
       const x = e.clientX - 50;
       const y = e.clientY - 50;
 
