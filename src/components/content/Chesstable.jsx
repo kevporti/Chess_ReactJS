@@ -37,15 +37,9 @@ export default function Chesstable() {
   // Setting an active piece if the player selected one to move and setting the coordinates using mouse cooords
   function grabPiece(e) {
     const piece = e.target;
+
     if (piece.classList.contains("piece")) {
-      const x = e.clientX - 25;
-      const y = e.clientY - 25;
-
-      piece.style.position = `absolute`;
-      piece.style.top = `${y}px`;
-      piece.style.left = `${x}px`;
-
-      activePiece = piece;
+      activePiece = e.target;
     }
   }
 
