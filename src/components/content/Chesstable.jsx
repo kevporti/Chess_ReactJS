@@ -1,14 +1,19 @@
 import Tile from "./Tile";
-import { useRef } from "react";
+import { useState, useRef } from "react";
 
 export default function Chesstable() {
   // Declaration of variables used in this Chesstable function
-  let horizontalPosition = ["A", "B", "C", "D", "E", "F", "G", "H"];
-  let verticalPosition = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  const horizontalPosition = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const verticalPosition = ["1", "2", "3", "4", "5", "6", "7", "8"];
   let table = [];
-  let pieces = [];
-  let activePiece = null;
-  const chessTableRef = useRef(null);
+  let initialPiecesState = [];
+  let [pieces, setPieces] = useState(initialPiecesState);
+  let chessTableRef = useRef(null);
+  let [activePiece, setActivePiece] = useState(null);
+  let [xStartPositionOfActivePiece, setXStartPositionOfActivePiece] =
+    useState(0);
+  let [yStartPositionOfActivePiece, setYStartPositionOfActivePiece] =
+    useState(0);
 
   class Piece {
     constructor(image, tablePosition, x, y) {
@@ -37,9 +42,16 @@ export default function Chesstable() {
   // Setting an active piece if the player selected one to move and setting the coordinates using mouse cooords
   function grabPiece(e) {
     const piece = e.target;
+    let chessTable = chessTableRef.current;
+    setXStartPositionOfActivePiece(
+      Math.floor((e.clientX - chessTable.offsetLeft) / 96)
+    );
+    setYStartPositionOfActivePiece(
+      Math.abs(Math.ceil((e.clientY - chessTable.offsetTop - 768) / 96))
+    );
 
     if (piece.classList.contains("piece")) {
-      activePiece = e.target;
+      setActivePiece(e.target);
     }
   }
 
@@ -64,8 +76,27 @@ export default function Chesstable() {
   }
 
   function dropPiece(e) {
-    if (activePiece) {
-      activePiece = null;
+    let chessTable = chessTableRef.current;
+    if (activePiece && chessTable) {
+      let x = Math.floor((e.clientX - chessTable.offsetLeft) / 96);
+      let y = Math.abs(
+        Math.ceil((e.clientY - chessTable.offsetTop - 768) / 96)
+      );
+
+      setPieces((value) => {
+        const newSetOfPieces = value.map((piece) => {
+          if (
+            piece.x === xStartPositionOfActivePiece &&
+            piece.y === yStartPositionOfActivePiece
+          ) {
+            piece.x = x;
+            piece.y = y;
+          }
+          return piece;
+        });
+        return newSetOfPieces;
+      });
+      setActivePiece(null);
     }
   }
 
@@ -77,7 +108,7 @@ export default function Chesstable() {
 
     for (let x = 0; x < 8; x++) {
       // Adding king, major y minor pieces
-      pieces.push(
+      initialPiecesState.push(
         new Piece(
           `assets/images/${startPositionOfPieces(x)}_${colorOfPiece}.png`,
           `${horizontalPosition[x]}${yPositionDifferentPieces}`,
@@ -86,7 +117,7 @@ export default function Chesstable() {
         )
       );
       // Adding pawn pieces
-      pieces.push(
+      initialPiecesState.push(
         new Piece(
           `assets/images/pawn_${colorOfPiece}.png`,
           `${horizontalPosition[x]}${yPositionPawnPieces}`,
