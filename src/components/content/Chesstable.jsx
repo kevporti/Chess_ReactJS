@@ -1,4 +1,5 @@
 import Tile from "./Tile";
+import Referee from "../referee/Referee";
 import { useState, useRef } from "react";
 
 export default function Chesstable() {
@@ -14,9 +15,12 @@ export default function Chesstable() {
     useState(0);
   let [yStartPositionOfActivePiece, setYStartPositionOfActivePiece] =
     useState(0);
+  const referee = new Referee();
 
   class Piece {
-    constructor(image, tablePosition, x, y) {
+    constructor(image, tablePosition, x, y, type, team) {
+      this.type = type;
+      this.team = team;
       this.image = image;
       this.tablePosition = tablePosition;
       this.x = x;
@@ -89,13 +93,29 @@ export default function Chesstable() {
             piece.x === xStartPositionOfActivePiece &&
             piece.y === yStartPositionOfActivePiece
           ) {
-            piece.x = x;
-            piece.y = y;
+            const validMove = referee.isValidMove(
+              xStartPositionOfActivePiece,
+              yStartPositionOfActivePiece,
+              x,
+              y,
+              piece.type,
+              piece.team
+            );
+
+            if (validMove) {
+              piece.x = x;
+              piece.y = y;
+            } else {
+              activePiece.style.position = "relative";
+              activePiece.style.removeProperty("top");
+              activePiece.style.removeProperty("left");
+            }
           }
           return piece;
         });
         return newSetOfPieces;
       });
+
       setActivePiece(null);
     }
   }
@@ -113,7 +133,9 @@ export default function Chesstable() {
           `assets/images/${startPositionOfPieces(x)}_${colorOfPiece}.png`,
           `${horizontalPosition[x]}${yPositionDifferentPieces}`,
           x,
-          yPositionDifferentPieces
+          yPositionDifferentPieces,
+          startPositionOfPieces(x),
+          colorOfPiece
         )
       );
       // Adding pawn pieces
@@ -122,7 +144,9 @@ export default function Chesstable() {
           `assets/images/pawn_${colorOfPiece}.png`,
           `${horizontalPosition[x]}${yPositionPawnPieces}`,
           x,
-          yPositionPawnPieces
+          yPositionPawnPieces,
+          "pawn",
+          colorOfPiece
         )
       );
     }
