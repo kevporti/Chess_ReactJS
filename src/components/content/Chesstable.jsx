@@ -99,7 +99,8 @@ export default function Chesstable() {
               x,
               y,
               piece.type,
-              piece.team
+              piece.team,
+              value
             );
 
             if (validMove) {

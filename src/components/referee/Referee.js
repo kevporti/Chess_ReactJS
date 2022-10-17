@@ -1,34 +1,49 @@
 export default class Referee {
+  boxIsOccupied(XCoord, YCoord, boardState) {
+    const piece = boardState.find((piece) =>
+      piece.x === XCoord && piece.y === YCoord ? piece : undefined
+    );
+    if (piece) {
+      return true;
+    }
+  }
+
   isValidMove(
     previousXCoord,
     previousYCoord,
     nextXCoord,
     nextYCoord,
     typeOfPiece,
-    teamType
+    teamType,
+    boardState
   ) {
-    //Separating options between teams
-    if (teamType === "w") {
-      //Pawn movement
-      if (typeOfPiece === "pawn") {
-        if (previousYCoord === 1) {
-          if (
-            (previousYCoord === nextYCoord - 1 ||
-              previousYCoord === nextYCoord - 2) &&
-            previousXCoord === nextXCoord
-          ) {
-            return true;
-          }
-        } else {
-          if (
-            previousXCoord === nextXCoord &&
-            previousYCoord === nextYCoord - 1
-          ) {
-            return true;
-          }
+    if (typeOfPiece === "pawn") {
+      const firstMovementRow = teamType === "w" ? 1 : 6;
+      const pawnDirection = teamType === "w" ? 1 : -1;
+
+      if (
+        previousXCoord === nextXCoord &&
+        previousYCoord === firstMovementRow &&
+        nextYCoord - previousYCoord === 2 * pawnDirection
+      ) {
+        if (
+          !this.boxIsOccupied(nextXCoord, nextYCoord, boardState) &&
+          !this.boxIsOccupied(
+            nextXCoord,
+            nextYCoord - pawnDirection,
+            boardState
+          )
+        ) {
+          return true;
+        }
+      } else if (
+        previousXCoord === nextXCoord &&
+        nextYCoord - previousYCoord === pawnDirection
+      ) {
+        if (!this.boxIsOccupied(nextXCoord, nextYCoord, boardState)) {
+          return true;
         }
       }
-    } else if (teamType === "b") {
     }
   }
 }
