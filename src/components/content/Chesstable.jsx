@@ -87,35 +87,49 @@ export default function Chesstable() {
         Math.ceil((e.clientY - chessTable.offsetTop - 768) / 96)
       );
 
-      setPieces((value) => {
-        const newSetOfPieces = value.map((piece) => {
-          if (
-            piece.x === xStartPositionOfActivePiece &&
-            piece.y === yStartPositionOfActivePiece
-          ) {
-            const validMove = referee.isValidMove(
-              xStartPositionOfActivePiece,
-              yStartPositionOfActivePiece,
-              x,
-              y,
-              piece.type,
-              piece.team,
-              value
-            );
+      const currentPiece = pieces.find(
+        (piece) =>
+          piece.x === xStartPositionOfActivePiece &&
+          piece.y === yStartPositionOfActivePiece
+      );
+      const attackedPiece = pieces.find(
+        (piece) => piece.x === x && piece.y === y
+      );
+      if (currentPiece) {
+        const validMove = referee.isValidMove(
+          xStartPositionOfActivePiece,
+          yStartPositionOfActivePiece,
+          x,
+          y,
+          currentPiece.type,
+          currentPiece.team,
+          pieces
+        );
 
-            if (validMove) {
+        if (validMove) {
+          //Updates the position of the pieces. If a piece is attacked, it's gonna be removed from the pieces.
+          const newSetOfPieces = pieces.reduce((result, piece) => {
+            if (
+              piece.x === xStartPositionOfActivePiece &&
+              piece.y === yStartPositionOfActivePiece
+            ) {
               piece.x = x;
               piece.y = y;
-            } else {
-              activePiece.style.position = "relative";
-              activePiece.style.removeProperty("top");
-              activePiece.style.removeProperty("left");
+              result.push(piece);
+            } else if (!(piece.x === x && piece.y === y)) {
+              result.push(piece);
             }
-          }
-          return piece;
-        });
-        return newSetOfPieces;
-      });
+
+            return result;
+          }, []);
+          setPieces(newSetOfPieces);
+          //Resets the position of the moved piece.
+        } else {
+          activePiece.style.position = "relative";
+          activePiece.style.removeProperty("top");
+          activePiece.style.removeProperty("left");
+        }
+      }
 
       setActivePiece(null);
     }
