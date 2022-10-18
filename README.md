@@ -1,3 +1,11 @@
+Estado actual del juego en proceso - movimiento/ataque de los peones listo:
+![chesspreview](https://user-images.githubusercontent.com/85496623/196505984-ee8ecd1b-4fdd-49b2-9468-c60fa4378787.PNG)
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
